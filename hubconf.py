@@ -1,6 +1,6 @@
 import torch
 
-def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbose=True, device=None):
+def _create(name, pretrained=True, channels=3, classes=2, autoshape=True, verbose=True, device=None):
 
     from pathlib import Path
     from models.common import AutoShape, DetectMultiBackend
@@ -17,7 +17,7 @@ def _create(name, pretrained=True, channels=3, classes=80, autoshape=True, verbo
     path = name.with_suffix('.pt') if name.suffix == '' and not name.is_dir() else name  # checkpoint path
     try:
         device = select_device(device)
-        if pretrained and channels == 3 and classes == 80:
+        if pretrained and channels == 3 and classes == 2:
             try:
                 model = DetectMultiBackend(path, device=device, fuse=autoshape)  # detection model
                 if autoshape:
@@ -56,8 +56,7 @@ def custom(path='path/to/model.pt', autoshape=True, _verbose=True, device=None):
     return _create(path, autoshape=autoshape, verbose=_verbose, device=device)
 
 
-def yolov5s(pretrained=True, channels=3, classes=80, autoshape=True, _verbose=True, device=None):
-    # YOLOv5-small model https://github.com/ultralytics/yolov5
+def yolov5s(pretrained=True, channels=3, classes=2, autoshape=True, _verbose=True, device=None):
     return _create('yolov5s', pretrained, channels, classes, autoshape, _verbose, device)
 
 
@@ -78,7 +77,7 @@ if __name__ == '__main__':
     print_args(vars(opt))
 
     # Model
-    model = _create(name=opt.model, pretrained=True, channels=3, classes=80, autoshape=True, verbose=True)
+    model = _create(name=opt.model, pretrained=True, channels=3, classes=2, autoshape=True, verbose=True)
     # model = custom(path='path/to/model.pt')  # custom
 
     # Images
