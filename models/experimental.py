@@ -69,14 +69,19 @@ class Ensemble(nn.ModuleList):
         y = torch.cat(y, 1)  # nms ensemble
         return y, None  # inference, train output
 
-
+import os
 def attempt_load(weights, device=None, inplace=True, fuse=True):
     # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
     from models.yolo import Detect, Model
 
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
-        ckpt = torch.load(attempt_download(w), map_location='cpu')  # load
+        if os.path.exists('yolov5s.pt'):
+            ckpt = torch.load('yolov5s.pt', map_location='cpu')  # load # load
+        #⚠️就是这一行出的问题，导致每次都从网上下，但是也不知道怎么改，de了半天bug都没成功
+        else:
+            ckpt = torch.load(attempt_download(w), map_location='cpu')
+        # 我草成功了
         ckpt = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
         # Model compatibility updates
